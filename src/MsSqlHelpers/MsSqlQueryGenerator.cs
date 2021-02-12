@@ -1,5 +1,9 @@
 ﻿using MsSqlHelpers.Interfaces;
+#if NETFRAMEWORK
+using System.Data.SqlClient;
+#else
 using Microsoft.Data.SqlClient;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Linq;
