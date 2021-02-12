@@ -1,7 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
+    <Authors>Alessandro Cagliostro Goncalves Neves</Authors>
+    <Company>Alessandro Cagliostro Goncalves Neves</Company>
+    <Description>MsSqlHelpers is a library to improve MS SQL Server common development tasks, like generating parametrized bulk inserts to be used with ADO.NET, Entity Framework and Dapper, and more (in a near future).</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/alecgn/mssql-helpers</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/alecgn/mssql-helpers</RepositoryUrl>
+    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <FileVersion>1.0.1</FileVersion>
+    <PackageReleaseNotes>- Added parametrized bulk insert sql generation.</PackageReleaseNotes>
+    <Copyright>Alessandro Cagliostro Goncalves Neves, 2021</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

@@ -32,7 +32,7 @@ namespace MsSqlHelpers
 
             if (collectionOfObjects is null || !collectionOfObjects.Any())
             {
-                throw new ArgumentException(@$"Parameter ""{nameof(collectionOfObjects)}"" can not be null or empty.", nameof(collectionOfObjects));
+                throw new ArgumentException($@"Parameter ""{nameof(collectionOfObjects)}"" can not be null or empty.", nameof(collectionOfObjects));
             }
         }
 
@@ -65,7 +65,7 @@ namespace MsSqlHelpers
 
         private StringBuilder GenerateColumnsDefinitionSql<T>(Mapper<T> mapper) where T : class => new StringBuilder()
             .Append('(')
-            .AppendJoin(", ", mapper.Mappings.Select(mapping => $"[{mapping.Value}]"))
+            .Append(string.Join(", ", mapper.Mappings.Select(mapping => $"[{mapping.Value}]")))
             .Append(')');
 
         private StringBuilder GenerateValuesSql<T>(IEnumerable<T> collectionOfObjects, Mapper<T> mapper)
@@ -83,7 +83,7 @@ namespace MsSqlHelpers
                 var propertyValues = GetPropertyValues(filteredObjectPropertiesInfo, @object);
                 valuesSql
                     .Append('(')
-                    .AppendJoin(", ", Enumerable.Range(offset, propertyValues.Count).Select(parameterIndex => $"@p{parameterIndex}"))
+                    .Append(string.Join(", ", Enumerable.Range(offset, propertyValues.Count).Select(parameterIndex => $"@p{parameterIndex}")))
                     .Append(')');
                 objectsProcessed++;
                 offset += propertyValues.Count;

@@ -13,9 +13,29 @@ namespace MsSqlHelpers.Extensions
 
         private static string HandleSqlObject(object @object, MsSqlUserLanguage msSqlUserLanguage)
         {
+            if (@object is null)
+            {
+                return SqlNull;
+            }
+
+            if (@object is string)
+            {
+                return HandleSqlString((string)@object);
+            }
+
+            if (@object is decimal)
+            {
+                return HandleSqlDecimal((decimal)@object, msSqlUserLanguage);
+            }
+
             if (@object is decimal?)
             {
                 return HandleSqlNullableDecimal((decimal?)@object, msSqlUserLanguage);
+            }
+
+            if (@object is DateTime)
+            {
+                return HandleSqlDateTime((DateTime)@object, msSqlUserLanguage);
             }
 
             if (@object is DateTime?)
@@ -23,14 +43,7 @@ namespace MsSqlHelpers.Extensions
                 return HandleSqlNullableDateTime((DateTime?)@object, msSqlUserLanguage);
             }
 
-            return @object switch
-            {
-                null => SqlNull,
-                string @string => HandleSqlString(@string),
-                decimal @decimal => HandleSqlDecimal(@decimal, msSqlUserLanguage),
-                DateTime @datetime => HandleSqlDateTime(@datetime, msSqlUserLanguage),
-                _ => @object.ToString()
-            };
+            return @object.ToString();
         }
 
         private static string HandleSqlString(string @string) => $"'{@string}'";
@@ -38,12 +51,17 @@ namespace MsSqlHelpers.Extensions
         private static string HandleSqlDecimal(decimal @decimal, MsSqlUserLanguage msSqlUserLanguage) =>
             @decimal.ToString(msSqlUserLanguage.GetCultureInfo());
 
-        private static CultureInfo GetCultureInfo(this MsSqlUserLanguage msSqlUserLanguage) =>
-            msSqlUserLanguage switch
+        private static CultureInfo GetCultureInfo(this MsSqlUserLanguage msSqlUserLanguage)
+        {
+            switch (msSqlUserLanguage)
             {
-                MsSqlUserLanguage.PortugueseBrazilian => new CultureInfo("pt-BR"),
-                _ => new CultureInfo("en-US"),
-            };
+                case MsSqlUserLanguage.PortugueseBrazilian:
+                    return new CultureInfo("pt-BR");
+                case MsSqlUserLanguage.EnglishUnitedStates:
+                default:
+                    return new CultureInfo("en-US");
+            }
+        }
 
         private static string HandleSqlNullableDecimal(decimal? @nullableDecimal, MsSqlUserLanguage msSqlUserLanguage) =>
             @nullableDecimal?.ToString(msSqlUserLanguage.GetCultureInfo());
@@ -51,12 +69,17 @@ namespace MsSqlHelpers.Extensions
         private static string HandleSqlDateTime(DateTime dateTime, MsSqlUserLanguage msSqlUserLanguage) =>
             dateTime.ToString(msSqlUserLanguage.GetDateTimeFormat());
 
-        private static string GetDateTimeFormat(this MsSqlUserLanguage msSqlUserLanguage) =>
-            msSqlUserLanguage switch
+        private static string GetDateTimeFormat(this MsSqlUserLanguage msSqlUserLanguage)
+        {
+            switch (msSqlUserLanguage)
             {
-                MsSqlUserLanguage.PortugueseBrazilian => "dd-MM-yyyy HH:mm:ss.fff",
-                _ => "yyyy-MM-dd HH:mm:ss.fff",
-            };
+                case MsSqlUserLanguage.PortugueseBrazilian:
+                    return "dd-MM-yyyy HH:mm:ss.fff";
+                case MsSqlUserLanguage.EnglishUnitedStates:
+                default:
+                    return "yyyy-MM-dd HH:mm:ss.fff";
+            }
+        }
 
         private static string HandleSqlNullableDateTime(DateTime? nullableDateTime, MsSqlUserLanguage msSqlUserLanguage) =>
             nullableDateTime?.ToString(msSqlUserLanguage.GetDateTimeFormat());
