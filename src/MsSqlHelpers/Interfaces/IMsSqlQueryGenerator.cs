@@ -1,4 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
+﻿#if NETFRAMEWORK
+using System.Data.SqlClient;
+#else
+using Microsoft.Data.SqlClient;
+#endif
 using System.Collections.Generic;
 
 namespace MsSqlHelpers.Interfaces
