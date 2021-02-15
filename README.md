@@ -5,6 +5,10 @@ MsSqlHelpers is a library to improve MS SQL Server common development tasks, lik
 **ADO.NET usage:**
 
 ```csharp
+using MsSqlHelpers;
+
+...
+
 var mapper = new MapperBuilder<Person>()
     .SetTableName("People")
     .AddMapping(propertyName: nameof(Person.FirstName), columnName: "Name")
@@ -37,6 +41,10 @@ using (var sqlConnection = new SqlConnection(connectionString))
 **Entity Framework usage:**
 
 ```csharp
+using MsSqlHelpers;
+
+...
+
 var mapper = new MapperBuilder<Person>()
     .SetTableName("People")
     .AddMapping(propertyName: nameof(Person.FirstName), columnName: "Name")
