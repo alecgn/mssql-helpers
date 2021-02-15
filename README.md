@@ -62,8 +62,8 @@ var sqlQueriesAndParameters = new MsSqlQueryGenerator().GenerateParametrizedBulk
 // Default batch size: 1000 rows per insert.
 foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
 {
-    await _context.Database.ExecuteSqlRawAsync(SqlQuery, SqlParameters);
-    // Depracated but still works: await _context.Database.ExecuteSqlCommand(SqlQuery, SqlParameters);
+    _context.Database.ExecuteSqlRaw(SqlQuery, SqlParameters);
+    // Depracated but still works: _context.Database.ExecuteSqlCommand(SqlQuery, SqlParameters);
 }
 ```
 
