@@ -86,14 +86,14 @@ var people = new List<Person>()
     new Person() { FirstName = "Paul", LastName = "McCartney", DateOfBirth = new DateTime(1942, 6, 18) },
 };
 var connectionString = "Server=SERVER_ADDRESS;Database=DATABASE_NAME;User Id=USERNAME;Password=PASSWORD;";
-var sqlQueriesAndParameters = new MsSqlQueryGenerator().GenerateDapperParametrizedBulkInserts(mapper, people);
+var sqlQueriesAndDapperParameters = new MsSqlQueryGenerator().GenerateDapperParametrizedBulkInserts(mapper, people);
 
 using (var sqlConnection = new SqlConnection(connectionString))
 {
     // Default batch size: 1000 rows per insert.
-    foreach (var (SqlQuery, DynamicParameters) in sqlQueriesAndParameters)
+    foreach (var (SqlQuery, DapperDynamicParameters) in sqlQueriesAndDapperParameters)
     {
-        sqlConnection.Execute(SqlQuery, DynamicParameters);
+        sqlConnection.Execute(SqlQuery, DapperDynamicParameters);
     }
 }
 ```
