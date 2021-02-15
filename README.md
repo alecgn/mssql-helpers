@@ -26,7 +26,8 @@ var sqlQueriesAndParameters = new MsSqlQueryGenerator().GenerateParametrizedBulk
 using (var sqlConnection = new SqlConnection(connectionString))
 {
     sqlConnection.Open();
-
+    
+    // Default batch size: 1000 rows per insert.
     foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
     {
         using (SqlCommand sqlCommand = new SqlCommand(SqlQuery, sqlConnection))
@@ -58,6 +59,7 @@ var people = new List<Person>()
 };
 var sqlQueriesAndParameters = new MsSqlQueryGenerator().GenerateParametrizedBulkInserts(mapper, people);
 
+// Default batch size: 1000 rows per insert.
 foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
 {
     await _context.Database.ExecuteSqlRawAsync(SqlQuery, SqlParameters);
