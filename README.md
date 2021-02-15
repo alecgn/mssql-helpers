@@ -63,5 +63,6 @@ var sqlQueriesAndParameters = new MsSqlQueryGenerator().GenerateParametrizedBulk
 foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
 {
     await _context.Database.ExecuteSqlRawAsync(SqlQuery, SqlParameters);
+    // Depracated but still works: await _context.Database.ExecuteSqlCommand(SqlQuery, SqlParameters);
 }
 ```
