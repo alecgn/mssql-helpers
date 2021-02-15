@@ -66,3 +66,34 @@ foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
     // Depracated but still works: await _context.Database.ExecuteSqlCommand(SqlQuery, SqlParameters);
 }
 ```
+
+**Dapper usage:**
+
+```csharp
+using MsSqlHelpers;
+
+...
+
+var mapper = new MapperBuilder<Person>()
+    .SetTableName("People")
+    .AddMapping(propertyName: nameof(Person.FirstName), columnName: "Name")
+    .AddMapping(propertyName: nameof(Person.LastName), columnName: "Surename")
+    .AddMapping(propertyName: nameof(Person.DateOfBirth), columnName: "Birthday")
+    .Build();
+var people = new List<Person>()
+{ 
+    new Person() { FirstName = "John", LastName = "Lennon", DateOfBirth = new DateTime(1940, 10, 9) },
+    new Person() { FirstName = "Paul", LastName = "McCartney", DateOfBirth = new DateTime(1942, 6, 18) },
+};
+var connectionString = "Server=SERVER_ADDRESS;Database=DATABASE_NAME;User Id=USERNAME;Password=PASSWORD;";
+var sqlQueriesAndDapperParameters = new MsSqlQueryGenerator().GenerateDapperParametrizedBulkInserts(mapper, people);
+
+using (var sqlConnection = new SqlConnection(connectionString))
+{
+    // Default batch size: 1000 rows per insert.
+    foreach (var (SqlQuery, DapperDynamicParameters) in sqlQueriesAndDapperParameters)
+    {
+        sqlConnection.Execute(SqlQuery, DapperDynamicParameters);
+    }
+}
+```
