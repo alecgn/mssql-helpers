@@ -70,6 +70,10 @@ foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
 **Dapper usage:**
 
 ```csharp
+using MsSqlHelpers;
+
+...
+
 var mapper = new MapperBuilder<Person>()
     .SetTableName("People")
     .AddMapping(propertyName: nameof(Person.FirstName), columnName: "Name")
