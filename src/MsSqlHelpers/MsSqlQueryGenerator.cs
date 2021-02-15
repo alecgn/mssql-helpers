@@ -1,4 +1,5 @@
-﻿using MsSqlHelpers.Interfaces;
+﻿using Dapper;
+using MsSqlHelpers.Interfaces;
 #if NETFRAMEWORK
 using System.Data.SqlClient;
 #else
@@ -16,7 +17,7 @@ namespace MsSqlHelpers
     {
         private const int MaxBatchSize = 1000;
 
-        public IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateParametrizedBulkInserts<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects) 
+        public IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateParametrizedBulkInserts<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
             where T : class
         {
             ValidateParameters(mapper, collectionOfObjects);
@@ -24,11 +25,19 @@ namespace MsSqlHelpers
             return GenerateSqlQueriesAndParameters(mapper, collectionOfObjects);
         }
 
-        private static void ValidateParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects) 
+        public IEnumerable<(string SqlQuery, DynamicParameters DapperDynamicParameters)> GenerateDapperParametrizedBulkInserts<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
+            where T : class
+        {
+            ValidateParameters(mapper, collectionOfObjects);
+
+            return GenerateSqlQueriesAndDapperDynamicParameters(mapper, collectionOfObjects);
+        }
+
+        private static void ValidateParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
             where T : class
         {
             var mapperValidationResult = mapper.Validate();
-            
+
             if (!mapperValidationResult.IsValid)
             {
                 throw new ArgumentException(string.Join(Environment.NewLine, mapperValidationResult.ValidationErrors));
@@ -40,7 +49,7 @@ namespace MsSqlHelpers
             }
         }
 
-        private IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateSqlQueriesAndParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects) 
+        private IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateSqlQueriesAndParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
             where T : class
         {
             var numberOfBatches = (int)Math.Ceiling((double)collectionOfObjects.Count() / MaxBatchSize);
@@ -48,6 +57,17 @@ namespace MsSqlHelpers
             for (int batchNumber = 1; batchNumber <= numberOfBatches; batchNumber++)
             {
                 yield return GenerateSqlQueryAndParameters(mapper, collectionOfObjects, batchNumber);
+            }
+        }
+
+        private IEnumerable<(string SqlQuery, DynamicParameters DapperDynamicParameters)> GenerateSqlQueriesAndDapperDynamicParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
+            where T : class
+        {
+            var numberOfBatches = (int)Math.Ceiling((double)collectionOfObjects.Count() / MaxBatchSize);
+
+            for (int batchNumber = 1; batchNumber <= numberOfBatches; batchNumber++)
+            {
+                yield return GenerateSqlQueryAndDapperDynamicParameters(mapper, collectionOfObjects, batchNumber);
             }
         }
 
@@ -65,6 +85,22 @@ namespace MsSqlHelpers
                 .Append(values);
 
             return (SqlQuery: sqlQuery.ToString(), SqlParameters: GenerateSqlParameters(collectionOfObjectsToInsert, mapper));
+        }
+
+        private (string SqlQuery, DynamicParameters DapperDynamicParameters) GenerateSqlQueryAndDapperDynamicParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects, int batchNumber)
+            where T : class
+        {
+            var collectionOfObjectsToInsert = collectionOfObjects.Skip((batchNumber - 1) * MaxBatchSize).Take(MaxBatchSize);
+            var columnsDefinition = GenerateColumnsDefinitionSql(mapper);
+            var values = GenerateValuesSql(collectionOfObjectsToInsert, mapper);
+            var sqlQuery = new StringBuilder()
+                .Append("SET NOCOUNT ON; ")
+                .Append($"INSERT INTO [{mapper.TableName}] ")
+                .Append(columnsDefinition)
+                .Append(" VALUES ")
+                .Append(values);
+
+            return (SqlQuery: sqlQuery.ToString(), DapperDynamicParameters: GenerateDapperDynamicParameters(collectionOfObjectsToInsert, mapper));
         }
 
         private StringBuilder GenerateColumnsDefinitionSql<T>(Mapper<T> mapper) where T : class => new StringBuilder()
@@ -128,6 +164,24 @@ namespace MsSqlHelpers
             }
 
             return sqlParameters;
+        }
+
+        private DynamicParameters GenerateDapperDynamicParameters<T>(IEnumerable<T> collectionOfObjects, Mapper<T> mapper)
+            where T : class
+        {
+            var dapperDynamicParameters = new DynamicParameters();
+            var parameterIndex = 0;
+
+            foreach (var @object in collectionOfObjects)
+            {
+                foreach (var mapping in mapper.Mappings)
+                {
+                    dapperDynamicParameters.Add($"@p{parameterIndex}", GetPropertyValue(@object, mapping.Key) ?? DBNull.Value);
+                    parameterIndex++;
+                }
+            }
+
+            return dapperDynamicParameters;
         }
     }
 }
