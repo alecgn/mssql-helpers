@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace MsSqlHelpers
 {
@@ -26,6 +29,18 @@ namespace MsSqlHelpers
         public MapperBuilder<T> AddMapping(string propertyName, string columnName)
         {
             _mapper.Mappings.Add(propertyName, columnName);
+
+            return this;
+        }
+
+        public MapperBuilder<T> AddMapping<TProperty>(
+            Expression<Func<T, TProperty>> propertyLambda, string columnName)
+        {
+            var memberExpression = propertyLambda.Body as MemberExpression ??
+                throw new ArgumentException($"{nameof(propertyLambda)}.Body must be a MemberExpression.", nameof(propertyLambda));
+            var propertyInfo = memberExpression.Member as PropertyInfo ??
+                throw new ArgumentException($"{nameof(memberExpression)}.Member must be a PropertyInfo.", nameof(propertyLambda));
+            _mapper.Mappings.Add(propertyInfo.Name, columnName);
 
             return this;
         }
