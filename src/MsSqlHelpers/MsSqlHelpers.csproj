@@ -3,16 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.1</Version>
+    <Version>1.2.0</Version>
     <Authors>Alessandro Cagliostro Goncalves Neves</Authors>
     <Company>Alessandro Cagliostro Goncalves Neves</Company>
     <Description>MsSqlHelpers is a library to improve MS SQL Server common development tasks, like generating parametrized bulk inserts to be used with ADO.NET, Entity Framework and Dapper, and more (in a near future).</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/alecgn/mssql-helpers</PackageProjectUrl>
     <RepositoryUrl>https://github.com/alecgn/mssql-helpers</RepositoryUrl>
-    <AssemblyVersion>1.1.1</AssemblyVersion>
-    <FileVersion>1.1.1</FileVersion>
-    <PackageReleaseNotes>- Added validation for max. Sql allowed parameters count.</PackageReleaseNotes>
+    <AssemblyVersion>1.2.0</AssemblyVersion>
+    <FileVersion>1.2.0</FileVersion>
+    <PackageReleaseNotes>- Added overload for MapperBuilder's AddMapping method to allow lambda usage for properties.
+- Code refactors.</PackageReleaseNotes>
     <Copyright>Alessandro Cagliostro Goncalves Neves, 2021</Copyright>
   </PropertyGroup>
 

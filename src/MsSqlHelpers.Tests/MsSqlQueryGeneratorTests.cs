@@ -27,14 +27,14 @@ namespace MsSqlHelpers.Tests
         {
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(nameof(Person.FirstName), nameof(Person.FirstName))
-                .AddMapping(nameof(Person.LastName), nameof(Person.LastName))
-                .AddMapping(nameof(Person.DateOfBirth), nameof(Person.DateOfBirth))
+                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
+                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
                 .Build();
             var people = new Faker<Person>()
-                .RuleFor(p => p.FirstName, p => p.Person.FirstName)
-                .RuleFor(p => p.LastName, p => p.Person.LastName)
-                .RuleFor(p => p.DateOfBirth, p => p.Person.DateOfBirth)
+                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
+                .RuleFor(person => person.LastName, fakePerson => fakePerson.Person.LastName)
+                .RuleFor(person => person.DateOfBirth, fakePerson => fakePerson.Person.DateOfBirth)
                 .GenerateLazy(2);
 
             Action act = () => _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people);
@@ -53,9 +53,9 @@ namespace MsSqlHelpers.Tests
                 .SetMappings(mappings)
                 .Build();
             var people = new Faker<Person>()
-                .RuleFor(p => p.FirstName, p => p.Person.FirstName)
-                .RuleFor(p => p.LastName, p => p.Person.LastName)
-                .RuleFor(p => p.DateOfBirth, p => p.Person.DateOfBirth)
+                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
+                .RuleFor(person => person.LastName, fakePerson => fakePerson.Person.LastName)
+                .RuleFor(person => person.DateOfBirth, fakePerson => fakePerson.Person.DateOfBirth)
                 .GenerateLazy(2);
 
             Action act = () => _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people);
@@ -71,16 +71,16 @@ namespace MsSqlHelpers.Tests
             {
                 { $"{nameof(Person.FirstName)}_Invalid", nameof(Person.FirstName) },
                 { nameof(Person.LastName), nameof(Person.LastName) },
-                { nameof(Person.DateOfBirth), nameof(Person.DateOfBirth) },
+                { nameof(Person.DateOfBirth), "Birthday" },
             };
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
                 .SetMappings(mappings)
                 .Build();
             var people = new Faker<Person>()
-                .RuleFor(p => p.FirstName, p => p.Person.FirstName)
-                .RuleFor(p => p.LastName, p => p.Person.LastName)
-                .RuleFor(p => p.DateOfBirth, p => p.Person.DateOfBirth)
+                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
+                .RuleFor(person => person.LastName, fakePerson => fakePerson.Person.LastName)
+                .RuleFor(person => person.DateOfBirth, fakePerson => fakePerson.Person.DateOfBirth)
                 .GenerateLazy(2);
 
             Action act = () => _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people);
@@ -96,9 +96,9 @@ namespace MsSqlHelpers.Tests
             var tableName = Guid.NewGuid().ToString();
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(nameof(Person.FirstName), nameof(Person.FirstName))
-                .AddMapping(nameof(Person.LastName), nameof(Person.LastName))
-                .AddMapping(nameof(Person.DateOfBirth), nameof(Person.DateOfBirth))
+                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
+                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
                 .Build();
 
             Action act = () => _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people);
@@ -112,14 +112,14 @@ namespace MsSqlHelpers.Tests
             var tableName = Guid.NewGuid().ToString();
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(nameof(Person.FirstName), nameof(Person.FirstName))
-                .AddMapping(nameof(Person.LastName), nameof(Person.LastName))
-                .AddMapping(nameof(Person.DateOfBirth), nameof(Person.DateOfBirth))
+                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
+                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
                 .Build();
             var people = new Faker<Person>()
-                .RuleFor(p => p.FirstName, p => p.Person.FirstName)
-                .RuleFor(p => p.LastName, p => p.Person.LastName)
-                .RuleFor(p => p.DateOfBirth, p => p.Person.DateOfBirth)
+                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
+                .RuleFor(person => person.LastName, fakePerson => fakePerson.Person.LastName)
+                .RuleFor(person => person.DateOfBirth, fakePerson => fakePerson.Person.DateOfBirth)
                 .GenerateLazy(701);
 
             Action act = () => _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people);
@@ -133,14 +133,14 @@ namespace MsSqlHelpers.Tests
             var tableName = Guid.NewGuid().ToString();
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(nameof(Person.FirstName), nameof(Person.FirstName))
-                .AddMapping(nameof(Person.LastName), nameof(Person.LastName))
-                .AddMapping(nameof(Person.DateOfBirth), nameof(Person.DateOfBirth))
+                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
+                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
                 .Build();
             var people = new Faker<Person>()
-                .RuleFor(p => p.FirstName, p => p.Person.FirstName)
-                .RuleFor(p => p.LastName, p => p.Person.LastName)
-                .RuleFor(p => p.DateOfBirth, p => p.Person.DateOfBirth)
+                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
+                .RuleFor(person => person.LastName, fakePerson => fakePerson.Person.LastName)
+                .RuleFor(person => person.DateOfBirth, fakePerson => fakePerson.Person.DateOfBirth)
                 .Generate(2);
             var sqlParameters = CreateSqlParameters(mapper, people);
             var expectedResult = new List<(string SqlQuery, IEnumerable<IDbDataParameter> SqlParameters)>()
