@@ -11,9 +11,9 @@ using MsSqlHelpers;
 
 var mapper = new MapperBuilder<Person>()
     .SetTableName("People")
-    .AddMapping(propertyName: nameof(Person.FirstName), columnName: "Name")
-    .AddMapping(propertyName: nameof(Person.LastName), columnName: "Surename")
-    .AddMapping(propertyName: nameof(Person.DateOfBirth), columnName: "Birthday")
+    .AddMapping(person => person.FirstName, columnName: "Name")
+    .AddMapping(person => person.LastName, columnName: "Surename")
+    .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
     .Build();
 var people = new List<Person>()
 { 
@@ -48,9 +48,9 @@ using MsSqlHelpers;
 
 var mapper = new MapperBuilder<Person>()
     .SetTableName("People")
-    .AddMapping(propertyName: nameof(Person.FirstName), columnName: "Name")
-    .AddMapping(propertyName: nameof(Person.LastName), columnName: "Surename")
-    .AddMapping(propertyName: nameof(Person.DateOfBirth), columnName: "Birthday")
+    .AddMapping(person => person.FirstName, columnName: "Name")
+    .AddMapping(person => person.LastName, columnName: "Surename")
+    .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
     .Build();
 var people = new List<Person>()
 { 
@@ -76,9 +76,9 @@ using MsSqlHelpers;
 
 var mapper = new MapperBuilder<Person>()
     .SetTableName("People")
-    .AddMapping(propertyName: nameof(Person.FirstName), columnName: "Name")
-    .AddMapping(propertyName: nameof(Person.LastName), columnName: "Surename")
-    .AddMapping(propertyName: nameof(Person.DateOfBirth), columnName: "Birthday")
+    .AddMapping(person => person.FirstName, columnName: "Name")
+    .AddMapping(person => person.LastName, columnName: "Surename")
+    .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
     .Build();
 var people = new List<Person>()
 { 
