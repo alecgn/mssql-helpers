@@ -16,7 +16,7 @@ namespace MsSqlHelpers
     public class MsSqlQueryGenerator : IMsSqlQueryGenerator
     {
         private const int MaxAllowedBatchSize = 1000;
-        private const int MaxAllowedSqlParametersCount = 2100;
+        private const int MaxAllowedSqlParametersCount = (2100 - 1);
 
         public IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateParametrizedBulkInserts<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
             where T : class
@@ -169,7 +169,7 @@ namespace MsSqlHelpers
             {
                 foreach (var mapping in mapper.Mappings)
                 {
-                    dapperDynamicParameters.Add($"@p{parameterIndex}", GetPropertyValue(@object, mapping.Key) ?? DBNull.Value);
+                    dapperDynamicParameters.Add($"@p{parameterIndex}", GetPropertyValue(@object, mapping.Key));
                     parameterIndex++;
                 }
             }
