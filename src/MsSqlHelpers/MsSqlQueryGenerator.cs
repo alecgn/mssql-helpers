@@ -48,67 +48,52 @@ namespace MsSqlHelpers
             {
                 throw new ArgumentException($@"Parameter ""{nameof(collectionOfObjects)}"" can not be null or empty.", nameof(collectionOfObjects));
             }
-
-            var sqlParametersCount = (collectionOfObjects.Count() * mapper.Mappings.Count);
-
-            if (sqlParametersCount > MaxAllowedSqlParametersCount)
-            {
-                throw new ArgumentException($@"Current combination of {nameof(collectionOfObjects)} and mappings will generate more than max. Sql Server allowed parameters count per insert [{MaxAllowedSqlParametersCount}].", nameof(collectionOfObjects));
-            }
         }
 
         private IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateSqlQueriesAndParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
             where T : class
         {
-            var numberOfBatches = (int)Math.Ceiling((double)collectionOfObjects.Count() / MaxAllowedBatchSize);
+            var numberOfObjectsPerInsert = ((int)Math.Floor((double)MaxAllowedSqlParametersCount / mapper.Mappings.Count));
+            numberOfObjectsPerInsert = Math.Min(numberOfObjectsPerInsert, MaxAllowedBatchSize);
+            var numberOfBatches = (int)Math.Ceiling((double)collectionOfObjects.Count() / numberOfObjectsPerInsert);
 
             for (int batchNumber = 1; batchNumber <= numberOfBatches; batchNumber++)
             {
-                yield return GenerateSqlQueryAndParameters(mapper, collectionOfObjects, batchNumber);
+                var collectionOfObjectsToInsert = collectionOfObjects.Skip((batchNumber - 1) * numberOfObjectsPerInsert).Take(numberOfObjectsPerInsert);
+                var columnsDefinition = GenerateColumnsDefinitionSql(mapper);
+                var values = GenerateValuesSql(collectionOfObjectsToInsert, mapper);
+                var sqlQuery = new StringBuilder()
+                    .Append("SET NOCOUNT ON; ")
+                    .Append($"INSERT INTO [{mapper.TableName}] ")
+                    .Append(columnsDefinition)
+                    .Append(" VALUES ")
+                    .Append(values);
+
+                yield return (SqlQuery: sqlQuery.ToString(), SqlParameters: GenerateSqlParameters(collectionOfObjectsToInsert, mapper));
             }
         }
 
         private IEnumerable<(string SqlQuery, DynamicParameters DapperDynamicParameters)> GenerateSqlQueriesAndDapperDynamicParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
             where T : class
         {
-            var numberOfBatches = (int)Math.Ceiling((double)collectionOfObjects.Count() / MaxAllowedBatchSize);
+            var numberOfObjectsPerInsert = ((int)Math.Floor((double)MaxAllowedSqlParametersCount / mapper.Mappings.Count));
+            numberOfObjectsPerInsert = Math.Min(numberOfObjectsPerInsert, MaxAllowedBatchSize);
+            var numberOfBatches = (int)Math.Ceiling((double)collectionOfObjects.Count() / numberOfObjectsPerInsert);
 
             for (int batchNumber = 1; batchNumber <= numberOfBatches; batchNumber++)
             {
-                yield return GenerateSqlQueryAndDapperDynamicParameters(mapper, collectionOfObjects, batchNumber);
+                var collectionOfObjectsToInsert = collectionOfObjects.Skip((batchNumber - 1) * numberOfObjectsPerInsert).Take(numberOfObjectsPerInsert);
+                var columnsDefinition = GenerateColumnsDefinitionSql(mapper);
+                var values = GenerateValuesSql(collectionOfObjectsToInsert, mapper);
+                var sqlQuery = new StringBuilder()
+                    .Append("SET NOCOUNT ON; ")
+                    .Append($"INSERT INTO [{mapper.TableName}] ")
+                    .Append(columnsDefinition)
+                    .Append(" VALUES ")
+                    .Append(values);
+
+                yield return (SqlQuery: sqlQuery.ToString(), DapperDynamicParameters: GenerateDapperDynamicParameters(collectionOfObjectsToInsert, mapper));
             }
-        }
-
-        private (string SqlQuery, IEnumerable<SqlParameter> SqlParameters) GenerateSqlQueryAndParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects, int batchNumber)
-            where T : class
-        {
-            var collectionOfObjectsToInsert = collectionOfObjects.Skip((batchNumber - 1) * MaxAllowedBatchSize).Take(MaxAllowedBatchSize);
-            var columnsDefinition = GenerateColumnsDefinitionSql(mapper);
-            var values = GenerateValuesSql(collectionOfObjectsToInsert, mapper);
-            var sqlQuery = new StringBuilder()
-                .Append("SET NOCOUNT ON; ")
-                .Append($"INSERT INTO [{mapper.TableName}] ")
-                .Append(columnsDefinition)
-                .Append(" VALUES ")
-                .Append(values);
-
-            return (SqlQuery: sqlQuery.ToString(), SqlParameters: GenerateSqlParameters(collectionOfObjectsToInsert, mapper));
-        }
-
-        private (string SqlQuery, DynamicParameters DapperDynamicParameters) GenerateSqlQueryAndDapperDynamicParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects, int batchNumber)
-            where T : class
-        {
-            var collectionOfObjectsToInsert = collectionOfObjects.Skip((batchNumber - 1) * MaxAllowedBatchSize).Take(MaxAllowedBatchSize);
-            var columnsDefinition = GenerateColumnsDefinitionSql(mapper);
-            var values = GenerateValuesSql(collectionOfObjectsToInsert, mapper);
-            var sqlQuery = new StringBuilder()
-                .Append("SET NOCOUNT ON; ")
-                .Append($"INSERT INTO [{mapper.TableName}] ")
-                .Append(columnsDefinition)
-                .Append(" VALUES ")
-                .Append(values);
-
-            return (SqlQuery: sqlQuery.ToString(), DapperDynamicParameters: GenerateDapperDynamicParameters(collectionOfObjectsToInsert, mapper));
         }
 
         private StringBuilder GenerateColumnsDefinitionSql<T>(Mapper<T> mapper) where T : class => new StringBuilder()
