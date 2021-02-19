@@ -107,27 +107,6 @@ namespace MsSqlHelpers.Tests
         }
 
         [Test]
-        public void ShouldThrowArgumentException_WhenCombinationOfCollectionOfObjectsAndMappings_IsMoreThanMaxAllowedSqlParametersCount()
-        {
-            var tableName = Guid.NewGuid().ToString();
-            var mapper = new MapperBuilder<Person>()
-                .SetTableName(tableName)
-                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
-                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
-                .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
-                .Build();
-            var people = new Faker<Person>()
-                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
-                .RuleFor(person => person.LastName, fakePerson => fakePerson.Person.LastName)
-                .RuleFor(person => person.DateOfBirth, fakePerson => fakePerson.Person.DateOfBirth)
-                .GenerateLazy(701);
-
-            Action act = () => _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people);
-
-            act.Should().ThrowExactly<ArgumentException>();
-        }
-
-        [Test]
         public void ValidateIfGeneratedSqlAndParameters_AreEquals_ExpectedSqlAndParameters()
         {
             var tableName = Guid.NewGuid().ToString();
