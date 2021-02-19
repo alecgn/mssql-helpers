@@ -1,4 +1,7 @@
 # MsSqlHelpers
+[![Build status (mssql-helpers)](https://github.com/alecgn/mssql-helpers/workflows/build/badge.svg)](#)
+[![Nuget version (mssql-helpers)](https://img.shields.io/nuget/v/MsSqlHelpers)](https://nuget.org/packages/MsSqlHelpers) 
+[![Nuget downloads (MsSqlHelpers)](https://img.shields.io/nuget/dt/MsSqlHelpers)](https://nuget.org/packages/MsSqlHelpers)
 
 MsSqlHelpers is a library to improve MS SQL Server common development tasks, like generating parametrized bulk inserts to be used with ADO.NET, Entity Framework and Dapper, and more (in a near future).
 
@@ -27,7 +30,7 @@ using (var sqlConnection = new SqlConnection(connectionString))
 {
     sqlConnection.Open();
     
-    // Default batch size: 1000 rows per insert.
+    // Default batch size: 1000 rows or 2100 parameters per insert.
     foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
     {
         using (SqlCommand sqlCommand = new SqlCommand(SqlQuery, sqlConnection))
@@ -59,7 +62,7 @@ var people = new List<Person>()
 };
 var sqlQueriesAndParameters = new MsSqlQueryGenerator().GenerateParametrizedBulkInserts(mapper, people);
 
-// Default batch size: 1000 rows per insert.
+// Default batch size: 1000 rows or 2100 parameters per insert.
 foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
 {
     _context.Database.ExecuteSqlRaw(SqlQuery, SqlParameters);
@@ -90,7 +93,7 @@ var sqlQueriesAndDapperParameters = new MsSqlQueryGenerator().GenerateDapperPara
 
 using (var sqlConnection = new SqlConnection(connectionString))
 {
-    // Default batch size: 1000 rows per insert.
+    // Default batch size: 1000 rows or 2100 parameters per insert.
     foreach (var (SqlQuery, DapperDynamicParameters) in sqlQueriesAndDapperParameters)
     {
         sqlConnection.Execute(SqlQuery, DapperDynamicParameters);
