@@ -30,7 +30,7 @@ using (var sqlConnection = new SqlConnection(connectionString))
 {
     sqlConnection.Open();
     
-    // Default batch size: 1000 rows or 2100 parameters per insert.
+    // Default batch size: 1000 rows or (2100-1) parameters per insert.
     foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
     {
         using (SqlCommand sqlCommand = new SqlCommand(SqlQuery, sqlConnection))
@@ -62,7 +62,7 @@ var people = new List<Person>()
 };
 var sqlQueriesAndParameters = new MsSqlQueryGenerator().GenerateParametrizedBulkInserts(mapper, people);
 
-// Default batch size: 1000 rows or 2100 parameters per insert.
+// Default batch size: 1000 rows or (2100-1) parameters per insert.
 foreach (var (SqlQuery, SqlParameters) in sqlQueriesAndParameters)
 {
     _context.Database.ExecuteSqlRaw(SqlQuery, SqlParameters);
@@ -93,7 +93,7 @@ var sqlQueriesAndDapperParameters = new MsSqlQueryGenerator().GenerateDapperPara
 
 using (var sqlConnection = new SqlConnection(connectionString))
 {
-    // Default batch size: 1000 rows or 2100 parameters per insert.
+    // Default batch size: 1000 rows or (2100-1) parameters per insert.
     foreach (var (SqlQuery, DapperDynamicParameters) in sqlQueriesAndDapperParameters)
     {
         sqlConnection.Execute(SqlQuery, DapperDynamicParameters);

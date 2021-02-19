@@ -3,16 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <Authors>Alessandro Cagliostro Goncalves Neves</Authors>
     <Company>Alessandro Cagliostro Goncalves Neves</Company>
     <Description>MsSqlHelpers is a library to improve MS SQL Server common development tasks, like generating parametrized bulk inserts to be used with ADO.NET, Entity Framework and Dapper, and more (in a near future).</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/alecgn/mssql-helpers</PackageProjectUrl>
     <RepositoryUrl>https://github.com/alecgn/mssql-helpers</RepositoryUrl>
-    <AssemblyVersion>1.2.1</AssemblyVersion>
-    <FileVersion>1.2.1</FileVersion>
-    <PackageReleaseNotes>- Fixed throwing exception when parameters count per insert exceeds 2100 (SQL Server limit).</PackageReleaseNotes>
+    <AssemblyVersion>1.2.2</AssemblyVersion>
+    <FileVersion>1.2.2</FileVersion>
+    <PackageReleaseNotes>- Fixed Dapper's System.NotSupportedException when parameters with null value, SQL Server error when more than 2099 parameters per insert.</PackageReleaseNotes>
     <Copyright>Alessandro Cagliostro Goncalves Neves, 2021</Copyright>
     <PackageIcon>mssql-helpers-icon.png</PackageIcon>
     <PackageTags>ms sql server database dapper entity framework ado bulk insert net c# c-sharp</PackageTags>
