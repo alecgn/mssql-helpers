@@ -15,8 +15,8 @@ namespace MsSqlHelpers
 {
     public class MsSqlQueryGenerator : IMsSqlQueryGenerator
     {
-        private const int MaxAllowedBatchSize = 1000;
-        private const int MaxAllowedSqlParametersCount = (2100 - 1);
+        public const int MaxAllowedBatchSize = 1000;
+        public const int MaxAllowedSqlParametersCount = (2100 - 1);
 
         public IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateParametrizedBulkInserts<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
             where T : class

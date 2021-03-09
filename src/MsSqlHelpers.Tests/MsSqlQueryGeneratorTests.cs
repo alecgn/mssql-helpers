@@ -107,7 +107,7 @@ namespace MsSqlHelpers.Tests
         }
 
         [Test]
-        public void ValidateIfGeneratedSqlAndParameters_AreEquals_ExpectedSqlAndParameters()
+        public void ShouldValidateIfGeneratedSqlAndParameters_AreEquals_ExpectedSqlAndParameters()
         {
             var tableName = Guid.NewGuid().ToString();
             var mapper = new MapperBuilder<Person>()
@@ -129,6 +129,45 @@ namespace MsSqlHelpers.Tests
             var result = _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people);
 
             result.Should().BeEquivalentTo(expectedResult.AsEnumerable());
+        }
+
+        [Test]
+        public void ShouldSplitGeneratedSqlAndParameters_WhenCollectionOfObjects_IsMoreThanMaxAllowedBatchSize()
+        {
+            var tableName = Guid.NewGuid().ToString();
+            var mapper = new MapperBuilder<Person>()
+                .SetTableName(tableName)
+                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
+                .Build();
+            var people = new Faker<Person>()
+                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
+                .GenerateLazy(MsSqlQueryGenerator.MaxAllowedBatchSize + 1);
+
+            var result = _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people);
+
+            result.Count().Should().Be(2);
+        }
+
+        [Test]
+        public void ShouldSplitGeneratedSqlAndParameters_WhenParametersCount_IsMoreThanMaxAllowedSqlParametersCount()
+        {
+            var tableName = Guid.NewGuid().ToString();
+            var mapper = new MapperBuilder<Person>()
+                .SetTableName(tableName)
+                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
+                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
+                .Build();
+            // 3 properties/parameters * 700 entities = 2,100 properties/parameters, wich is greater than MaxAllowedSqlParametersCount (2100-1)
+            var people = new Faker<Person>()
+                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
+                .RuleFor(person => person.LastName, fakePerson => fakePerson.Person.LastName)
+                .RuleFor(person => person.DateOfBirth, fakePerson => fakePerson.Person.DateOfBirth)
+                .GenerateLazy(700);
+
+            var result = _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people);
+
+            result.Count().Should().Be(2);
         }
 
         private static Dictionary<string, string> GetEmptyMapping() => new Dictionary<string, string>();
