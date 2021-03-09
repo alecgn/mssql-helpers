@@ -3,16 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.2.3</Version>
+    <Version>1.2.4</Version>
     <Authors>Alessandro Cagliostro Goncalves Neves</Authors>
     <Company>Alessandro Cagliostro Goncalves Neves</Company>
     <Description>MsSqlHelpers is a library to improve MS SQL Server common development tasks, like generating parametrized bulk inserts to be used with ADO.NET, Entity Framework and Dapper, and more (in a near future).</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/alecgn/mssql-helpers</PackageProjectUrl>
     <RepositoryUrl>https://github.com/alecgn/mssql-helpers</RepositoryUrl>
-    <AssemblyVersion>1.2.3</AssemblyVersion>
-    <FileVersion>1.2.3</FileVersion>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <AssemblyVersion>1.2.4</AssemblyVersion>
+    <FileVersion>1.2.4</FileVersion>
+    <PackageReleaseNotes>- Updated dependencies.</PackageReleaseNotes>
     <Copyright>Alessandro Cagliostro Goncalves Neves, 2021</Copyright>
     <PackageIcon>mssql-helpers-icon.png</PackageIcon>
     <PackageTags>ms sql server database dapper entity framework ado bulk insert net c# c-sharp</PackageTags>
@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.78" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
 
