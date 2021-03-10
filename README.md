@@ -1,6 +1,5 @@
 # MsSqlHelpers
-[![Build status (mssql-helpers)](https://github.com/alecgn/mssql-helpers/workflows/build/badge.svg)](#)
-[![Run tests (mssql-helpers)](https://github.com/alecgn/mssql-helpers/workflows/run-tests/badge.svg)](#)
+[![Build and tests status (mssql-helpers)](https://github.com/alecgn/mssql-helpers/workflows/build-and-test/badge.svg)](#)
 [![Nuget version (mssql-helpers)](https://img.shields.io/nuget/v/MsSqlHelpers)](https://nuget.org/packages/MsSqlHelpers) 
 [![Nuget downloads (MsSqlHelpers)](https://img.shields.io/nuget/dt/MsSqlHelpers)](https://nuget.org/packages/MsSqlHelpers)
 
