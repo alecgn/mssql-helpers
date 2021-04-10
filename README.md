@@ -3,7 +3,8 @@
 [![Nuget version (mssql-helpers)](https://img.shields.io/nuget/v/MsSqlHelpers)](https://nuget.org/packages/MsSqlHelpers) 
 [![Nuget downloads (MsSqlHelpers)](https://img.shields.io/nuget/dt/MsSqlHelpers)](https://nuget.org/packages/MsSqlHelpers)
 
-MsSqlHelpers is a library to improve MS SQL Server common development tasks, like generating parametrized bulk inserts to be used with ADO.NET, Entity Framework and Dapper, and more (in a near future).
+MsSqlHelpers is a library to improve MS SQL Server common development tasks, like generating parametrized bulk inserts to be used with ADO.NET, Entity Framework and Dapper, and more (in a near future).  
+To allow IDENTITY INSERT ON, there's an optional parameter in method call (default mode OFF).
 
 **ADO.NET usage:**
 

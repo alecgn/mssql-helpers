@@ -18,7 +18,10 @@ namespace MsSqlHelpers
         public const int MaxAllowedBatchSize = 1000;
         public const int MaxAllowedSqlParametersCount = (2100 - 1);
 
-        public IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateParametrizedBulkInserts<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
+        public IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateParametrizedBulkInserts<T>(
+            Mapper<T> mapper, 
+            IEnumerable<T> collectionOfObjects,
+            bool allowIdentityInsert = false)
             where T : class
         {
             ValidateParameters(mapper, collectionOfObjects);
@@ -26,7 +29,10 @@ namespace MsSqlHelpers
             return GenerateSqlQueriesAndParameters(mapper, collectionOfObjects);
         }
 
-        public IEnumerable<(string SqlQuery, DynamicParameters DapperDynamicParameters)> GenerateDapperParametrizedBulkInserts<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
+        public IEnumerable<(string SqlQuery, DynamicParameters DapperDynamicParameters)> GenerateDapperParametrizedBulkInserts<T>(
+            Mapper<T> mapper, 
+            IEnumerable<T> collectionOfObjects,
+            bool allowIdentityInsert = false)
             where T : class
         {
             ValidateParameters(mapper, collectionOfObjects);
@@ -50,7 +56,10 @@ namespace MsSqlHelpers
             }
         }
 
-        private IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateSqlQueriesAndParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
+        private IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateSqlQueriesAndParameters<T>(
+            Mapper<T> mapper, 
+            IEnumerable<T> collectionOfObjects,
+            bool allowIdentityInsert = false)
             where T : class
         {
             var numberOfObjectsPerInsert = ((int)Math.Floor((double)MaxAllowedSqlParametersCount / mapper.Mappings.Count));
@@ -64,6 +73,7 @@ namespace MsSqlHelpers
                 var values = GenerateValuesSql(collectionOfObjectsToInsert, mapper);
                 var sqlQuery = new StringBuilder()
                     .Append("SET NOCOUNT ON; ")
+                    .Append(allowIdentityInsert ? $"SET IDENTITY_INSERT [{mapper.TableName}] ON; " : "")
                     .Append($"INSERT INTO [{mapper.TableName}] ")
                     .Append(columnsDefinition)
                     .Append(" VALUES ")
@@ -73,7 +83,10 @@ namespace MsSqlHelpers
             }
         }
 
-        private IEnumerable<(string SqlQuery, DynamicParameters DapperDynamicParameters)> GenerateSqlQueriesAndDapperDynamicParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
+        private IEnumerable<(string SqlQuery, DynamicParameters DapperDynamicParameters)> GenerateSqlQueriesAndDapperDynamicParameters<T>(
+            Mapper<T> mapper, 
+            IEnumerable<T> collectionOfObjects,
+            bool allowIdentityInsert = false)
             where T : class
         {
             var numberOfObjectsPerInsert = ((int)Math.Floor((double)MaxAllowedSqlParametersCount / mapper.Mappings.Count));
@@ -87,6 +100,7 @@ namespace MsSqlHelpers
                 var values = GenerateValuesSql(collectionOfObjectsToInsert, mapper);
                 var sqlQuery = new StringBuilder()
                     .Append("SET NOCOUNT ON; ")
+                    .Append(allowIdentityInsert ? $"SET IDENTITY_INSERT [{mapper.TableName}] ON; " : "")
                     .Append($"INSERT INTO [{mapper.TableName}] ")
                     .Append(columnsDefinition)
                     .Append(" VALUES ")
