@@ -132,6 +132,31 @@ namespace MsSqlHelpers.Tests
         }
 
         [Test]
+        public void ShouldValidateIfGeneratedSqlAndParameters_AreEquals_ExpectedSqlAndParameters_WhenAllowIdentityInsertIsSetToTrue()
+        {
+            var tableName = Guid.NewGuid().ToString();
+            var mapper = new MapperBuilder<Person>()
+                .SetTableName(tableName)
+                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
+                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
+                .Build();
+            var people = new Faker<Person>()
+                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
+                .RuleFor(person => person.LastName, fakePerson => fakePerson.Person.LastName)
+                .RuleFor(person => person.DateOfBirth, fakePerson => fakePerson.Person.DateOfBirth)
+                .Generate(2);
+            var sqlParameters = CreateSqlParameters(mapper, people);
+            var expectedResult = new List<(string SqlQuery, IEnumerable<IDbDataParameter> SqlParameters)>()
+            {
+                (CreateSqlInsert(mapper, sqlParameters, allowIdentityInsert: true), sqlParameters)
+            };
+            var result = _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people, allowIdentityInsert: true);
+
+            result.Should().BeEquivalentTo(expectedResult.AsEnumerable());
+        }
+
+        [Test]
         public void ShouldSplitGeneratedSqlAndParameters_WhenCollectionOfObjects_IsMoreThanMaxAllowedBatchSize()
         {
             var tableName = Guid.NewGuid().ToString();
@@ -195,8 +220,9 @@ namespace MsSqlHelpers.Tests
         private static object GetPropertyValue(object @object, string propertyName) =>
             @object.GetType().GetProperty(propertyName).GetValue(@object, null);
 
-        private string CreateSqlInsert<T>(Mapper<T> mapper, List<IDbDataParameter> sqlParameters) where T : class =>
+        private string CreateSqlInsert<T>(Mapper<T> mapper, List<IDbDataParameter> sqlParameters, bool allowIdentityInsert = false) where T : class =>
             "SET NOCOUNT ON; " +
+            (allowIdentityInsert ? $"SET IDENTITY_INSERT [{mapper.TableName}] ON; " : "") + 
             $"INSERT INTO [{mapper.TableName}] ([{mapper.Mappings[nameof(Person.FirstName)]}], [{mapper.Mappings[nameof(Person.LastName)]}], [{mapper.Mappings[nameof(Person.DateOfBirth)]}]) " +
             $"VALUES ({sqlParameters[0].ParameterName}, {sqlParameters[1].ParameterName}, {sqlParameters[2].ParameterName}), " +
             $"({sqlParameters[3].ParameterName}, {sqlParameters[4].ParameterName}, {sqlParameters[5].ParameterName});";
