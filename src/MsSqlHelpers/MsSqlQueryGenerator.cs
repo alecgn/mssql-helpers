@@ -26,7 +26,7 @@ namespace MsSqlHelpers
         {
             ValidateParameters(mapper, collectionOfObjects);
 
-            return GenerateSqlQueriesAndParameters(mapper, collectionOfObjects);
+            return GenerateSqlQueriesAndParameters(mapper, collectionOfObjects, allowIdentityInsert);
         }
 
         public IEnumerable<(string SqlQuery, DynamicParameters DapperDynamicParameters)> GenerateDapperParametrizedBulkInserts<T>(
@@ -37,7 +37,7 @@ namespace MsSqlHelpers
         {
             ValidateParameters(mapper, collectionOfObjects);
 
-            return GenerateSqlQueriesAndDapperDynamicParameters(mapper, collectionOfObjects);
+            return GenerateSqlQueriesAndDapperDynamicParameters(mapper, collectionOfObjects, allowIdentityInsert);
         }
 
         private static void ValidateParameters<T>(Mapper<T> mapper, IEnumerable<T> collectionOfObjects)
