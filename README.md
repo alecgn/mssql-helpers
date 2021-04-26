@@ -17,7 +17,7 @@ var mapper = new MapperBuilder<Person>()
     .SetTableName("People")
     .AddMapping(person => person.FirstName, columnName: "Name")
     .AddMapping(person => person.LastName, columnName: "Surename")
-    .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
+    .AddMapping(person => person.DateOfBirth) // in this case property's name is the same as table column's name
     .Build();
 var people = new List<Person>()
 { 
@@ -54,7 +54,7 @@ var mapper = new MapperBuilder<Person>()
     .SetTableName("People")
     .AddMapping(person => person.FirstName, columnName: "Name")
     .AddMapping(person => person.LastName, columnName: "Surename")
-    .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
+    .AddMapping(person => person.DateOfBirth) // in this case property's name is the same as table column's name
     .Build();
 var people = new List<Person>()
 { 
@@ -82,7 +82,7 @@ var mapper = new MapperBuilder<Person>()
     .SetTableName("People")
     .AddMapping(person => person.FirstName, columnName: "Name")
     .AddMapping(person => person.LastName, columnName: "Surename")
-    .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
+    .AddMapping(person => person.DateOfBirth) // in this case property's name is the same as table column's name
     .Build();
 var people = new List<Person>()
 { 
