@@ -27,8 +27,8 @@ namespace MsSqlHelpers.Tests
         {
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
-                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.FirstName)
+                .AddMapping(person => person.LastName)
                 .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
                 .Build();
             var people = new Faker<Person>()
@@ -96,8 +96,8 @@ namespace MsSqlHelpers.Tests
             var tableName = Guid.NewGuid().ToString();
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
-                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.FirstName)
+                .AddMapping(person => person.LastName)
                 .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
                 .Build();
 
@@ -112,8 +112,8 @@ namespace MsSqlHelpers.Tests
             var tableName = Guid.NewGuid().ToString();
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
-                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.FirstName)
+                .AddMapping(person => person.LastName)
                 .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
                 .Build();
             var people = new Faker<Person>()
@@ -137,8 +137,8 @@ namespace MsSqlHelpers.Tests
             var tableName = Guid.NewGuid().ToString();
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
-                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.FirstName)
+                .AddMapping(person => person.LastName)
                 .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
                 .Build();
             var people = new Faker<Person>()
@@ -162,7 +162,7 @@ namespace MsSqlHelpers.Tests
             var tableName = Guid.NewGuid().ToString();
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
+                .AddMapping(person => person.FirstName)
                 .Build();
             var people = new Faker<Person>()
                 .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
@@ -179,8 +179,8 @@ namespace MsSqlHelpers.Tests
             var tableName = Guid.NewGuid().ToString();
             var mapper = new MapperBuilder<Person>()
                 .SetTableName(tableName)
-                .AddMapping(person => person.FirstName, columnName: nameof(Person.FirstName))
-                .AddMapping(person => person.LastName, columnName: nameof(Person.LastName))
+                .AddMapping(person => person.FirstName)
+                .AddMapping(person => person.LastName)
                 .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
                 .Build();
             // 3 properties/parameters * 700 entities = 2,100 properties/parameters, wich is greater than MaxAllowedSqlParametersCount (2100-1)
