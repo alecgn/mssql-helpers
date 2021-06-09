@@ -14,7 +14,7 @@ using MsSqlHelpers;
 ...
 
 var mapper = new MapperBuilder<Person>()
-    .SetTableName("People")
+    .SetTableName("People") // could be ommited if your table's name is the same as you entity's class name
     .AddMapping(person => person.FirstName, columnName: "Name")
     .AddMapping(person => person.LastName, columnName: "Surename")
     .AddMapping(person => person.DateOfBirth) // in this case property's name is the same as table column's name
@@ -51,7 +51,7 @@ using MsSqlHelpers;
 ...
 
 var mapper = new MapperBuilder<Person>()
-    .SetTableName("People")
+    .SetTableName("People") // could be ommited if your table's name is the same as you entity's class name
     .AddMapping(person => person.FirstName, columnName: "Name")
     .AddMapping(person => person.LastName, columnName: "Surename")
     .AddMapping(person => person.DateOfBirth) // in this case property's name is the same as table column's name
@@ -79,7 +79,7 @@ using MsSqlHelpers;
 ...
 
 var mapper = new MapperBuilder<Person>()
-    .SetTableName("People")
+    .SetTableName("People") // could be ommited if your table's name is the same as you entity's class name
     .AddMapping(person => person.FirstName, columnName: "Name")
     .AddMapping(person => person.LastName, columnName: "Surename")
     .AddMapping(person => person.DateOfBirth) // in this case property's name is the same as table column's name
