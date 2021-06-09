@@ -18,6 +18,13 @@ namespace MsSqlHelpers
         public const int MaxAllowedBatchSize = 1000;
         public const int MaxAllowedSqlParametersCount = (2100 - 1);
 
+        public (string SqlQuery, IEnumerable<SqlParameter> SqlParameters) GenerateParametrizedBulkInsert<T>(
+            Mapper<T> mapper,
+            T @entityObject,
+            bool allowIdentityInsert = false)
+            where T : class =>
+                GenerateParametrizedBulkInserts(mapper, new T[] { @entityObject }, allowIdentityInsert).FirstOrDefault();
+
         public IEnumerable<(string SqlQuery, IEnumerable<SqlParameter> SqlParameters)> GenerateParametrizedBulkInserts<T>(
             Mapper<T> mapper, 
             IEnumerable<T> collectionOfObjects,
@@ -28,6 +35,13 @@ namespace MsSqlHelpers
 
             return GenerateSqlQueriesAndParameters(mapper, collectionOfObjects, allowIdentityInsert);
         }
+
+        public (string SqlQuery, DynamicParameters DapperDynamicParameters) GenerateDapperParametrizedBulkInsert<T>(
+            Mapper<T> mapper,
+            T @entityObject,
+            bool allowIdentityInsert = false)
+            where T : class =>
+                GenerateDapperParametrizedBulkInserts(mapper, new T[] { @entityObject }, allowIdentityInsert).FirstOrDefault();
 
         public IEnumerable<(string SqlQuery, DynamicParameters DapperDynamicParameters)> GenerateDapperParametrizedBulkInserts<T>(
             Mapper<T> mapper, 
