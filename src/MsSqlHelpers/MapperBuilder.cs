@@ -12,6 +12,7 @@ namespace MsSqlHelpers
         public MapperBuilder()
         {
             _mapper = new Mapper<T>();
+            _mapper.TableName = nameof(T);
         }
 
         public MapperBuilder(string tableName)

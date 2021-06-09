@@ -195,6 +195,30 @@ namespace MsSqlHelpers.Tests
             result.Count().Should().Be(2);
         }
 
+        [Test]
+        public void ShouldFillAutomaticallyMapperTableNameWithEntityClassName_WhenTableName_IsNotProvided()
+        {
+            var mapper = new MapperBuilder<Person>() //  -> TableName not set by constructor
+                //.SetTableName(tableName) -> TableName not set by method
+                .AddMapping(person => person.FirstName)
+                .AddMapping(person => person.LastName)
+                .AddMapping(person => person.DateOfBirth, columnName: "Birthday")
+                .Build();
+            var people = new Faker<Person>()
+                .RuleFor(person => person.FirstName, fakePerson => fakePerson.Person.FirstName)
+                .RuleFor(person => person.LastName, fakePerson => fakePerson.Person.LastName)
+                .RuleFor(person => person.DateOfBirth, fakePerson => fakePerson.Person.DateOfBirth)
+                .Generate(2);
+            var sqlParameters = CreateSqlParameters(mapper, people);
+            var expectedResult = new List<(string SqlQuery, IEnumerable<IDbDataParameter> SqlParameters)>()
+            {
+                (CreateSqlInsert(mapper, sqlParameters, allowIdentityInsert: true), sqlParameters)
+            };
+            var result = _msSqlQueryGenerator.GenerateParametrizedBulkInserts(mapper, people, allowIdentityInsert: true);
+
+            result.Should().BeEquivalentTo(expectedResult.AsEnumerable());
+        }
+
         private static Dictionary<string, string> GetEmptyMapping() => new Dictionary<string, string>();
 
         private static IEnumerable<Person> GetEmptyCollectionOfPerson() => new Person[] { };
