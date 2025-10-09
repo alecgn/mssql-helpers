@@ -5,10 +5,15 @@ on:
             - develop
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v5
 
+    - name: Install libssl1.1
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y libssl1.1
+    
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v5
       with:
