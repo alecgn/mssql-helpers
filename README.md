@@ -101,5 +101,3 @@ using (var sqlConnection = new SqlConnection(connectionString))
     }
 }
 ```
-
-..
